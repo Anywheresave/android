@@ -42,6 +42,7 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.shares.ShareType;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 import com.owncloud.android.lib.resources.users.GetRemoteUserNameOperation;
+import com.owncloud.android.operations.DownloadFolderOperation;
 import com.owncloud.android.operations.common.SyncOperation;
 import com.owncloud.android.operations.CreateFolderOperation;
 import com.owncloud.android.operations.CreateShareOperation;
@@ -100,7 +101,8 @@ public class OperationsService extends Service {
     public static final String ACTION_REMOVE = "REMOVE";
     public static final String ACTION_CREATE_FOLDER = "CREATE_FOLDER";
     public static final String ACTION_SYNC_FILE = "SYNC_FILE";
-    public static final String ACTION_SYNC_FOLDER = "SYNC_FOLDER";//for the moment, just to download
+    public static final String ACTION_SYNC_FOLDER = "SYNC_FOLDER";
+    public static final String ACTION_DOWNLOAD_FOLDER = "DOWNLOAD_FOLDER" ;
     public static final String ACTION_MOVE_FILE = "MOVE_FILE";
     
     public static final String ACTION_OPERATION_ADDED = OperationsService.class.getName() +
@@ -613,7 +615,7 @@ public class OperationsService extends Service {
                     );
                     
                 } else if (action.equals(ACTION_SYNC_FOLDER)) {
-                    // Sync file
+                    // Sync folder (all its descendant files are sync'ed)
                     String remotePath = operationIntent.getStringExtra(EXTRA_REMOTE_PATH);
                     operation = new SynchronizeFolderOperation(
                             this,                       // TODO remove this dependency from construction time
@@ -621,7 +623,17 @@ public class OperationsService extends Service {
                             account, 
                             System.currentTimeMillis()  // TODO remove this dependency from construction time
                     );
-                    
+
+                } else if (action.equals(ACTION_DOWNLOAD_FOLDER)) { // TODO remove when sync of folders is good enough
+                    // Download folder (all its descendant files are downloaded)
+                    String remotePath = operationIntent.getStringExtra(EXTRA_REMOTE_PATH);
+                    operation = new DownloadFolderOperation(
+                            this,
+                            remotePath,
+                            account,
+                            System.currentTimeMillis()
+                    );
+
                 } else if (action.equals(ACTION_MOVE_FILE)) {
                     // Move file/folder
                     String remotePath = operationIntent.getStringExtra(EXTRA_REMOTE_PATH);
