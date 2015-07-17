@@ -326,7 +326,6 @@ public class FileOperationsHelper {
 
         // for both files and folders
         FileDownloaderBinder downloaderBinder = mFileActivity.getFileDownloaderBinder();
-        FileUploaderBinder uploaderBinder = mFileActivity.getFileUploaderBinder();
         if (downloaderBinder != null && downloaderBinder.isDownloading(account, file)) {
             downloaderBinder.cancel(account, file);
 
@@ -338,7 +337,9 @@ public class FileOperationsHelper {
                 mFileActivity.getStorageManager().saveFile(parent);
             }
 
-        } else if (uploaderBinder != null && uploaderBinder.isUploading(account, file)) {
+        }
+        FileUploaderBinder uploaderBinder = mFileActivity.getFileUploaderBinder();
+        if (uploaderBinder != null && uploaderBinder.isUploading(account, file)) {
             uploaderBinder.cancel(account, file);
         }
     }

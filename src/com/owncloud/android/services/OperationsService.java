@@ -56,7 +56,6 @@ import com.owncloud.android.operations.SynchronizeFolderOperation;
 import com.owncloud.android.operations.UnshareLinkOperation;
 
 import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.accounts.AccountsException;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
